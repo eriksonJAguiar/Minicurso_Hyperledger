@@ -1,0 +1,44 @@
+namespace org.tradesalecar
+
+enum Make {
+  o CHEVY
+  o FORD
+  o DODGE
+  o TOYOTA
+  o SUBARU
+  o HONDA
+}
+
+participant Buyer identified by buyerId {
+  o String buyerId
+  o Double amount
+  o String name
+}
+
+participant Seller identified by sellerId {
+  o String sellerId
+  o Double amount
+  o String name
+}
+
+asset Car identified by carId {
+  o String carId
+  o Make  make
+  o String model
+  o String VIN
+}
+
+asset SaleContract identified by saleId {
+  o String saleId
+  o Double price
+  o Make make
+  o String model
+  o String VIN
+  --> Buyer buyer
+  --> Seller seller
+}
+
+transaction Sale {
+  --> SaleContract saleContract
+}
+
