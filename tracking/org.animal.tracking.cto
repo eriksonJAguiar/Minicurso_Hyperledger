@@ -1,0 +1,93 @@
+namespace org.animal.tracking
+
+
+
+/** Define variaveis estaticas para o tipo de animal */
+enum AnimalType{
+  o SHEEP
+  o COW
+  o PIG
+  o CHICKEN
+}
+
+enum MovementStatus{
+  o IN_FIELD  /** no campo */
+  o IN_TRANSIT /** Sendo transportado */
+}
+
+
+/** tipo de producao que o anima esta associado */
+enum ProdutionType{
+  o MEAT
+  o WOOL /** Lã */
+  o DAIRY /** Leite */
+  o BREEADING /** Reprodução */
+  o OTHER
+}
+
+
+abstract participant User identified by cpf {
+  o String cpf
+  o String firstname
+  o String lastname
+  o String email
+}
+
+participant Farmer extends User{
+  o String address1
+  o String address2
+  o String country
+  o String postcode
+  --> Business business optional /** tipo do negocio */
+}
+
+participant Regulator extends User {
+
+}
+
+asset Field identified by fieldId {
+  o String fieldId
+  o String name
+  --> Business business
+}
+
+asset Animal identified by animalId {
+  o String animalId
+  o AnimalType species
+  o MovementStatus movementStatus
+  o ProdutionType prodType
+  --> Field location optional
+  --> Farmer owner
+}
+
+/** A Business asset which is owned by a Farmer, is related to a list of fields and has a list of incoming animals. */
+asset Business identified by sbi{
+  o String sbi /** Single Business Identifier */
+  o String address1
+  o String address2
+  o String country
+  o String postcode
+  --> Farmer owner
+  --> Animal[] animals optional
+}
+
+abstract transaction AnimalMovement {
+  o String[] logs optional
+  --> Animal animal
+  --> Business from
+  --> Business to
+}
+
+/** Saida dos animais para outra fazenda */
+transaction AnimalMovementDeparture extends AnimalMovement {
+  --> Field fromField
+}
+
+/** Entrada de animais de outra fazenda */
+transaction AnimalMovementArrival extends AnimalMovement{
+  --> Field arrivalField 
+}
+
+transaction SetupDemo {
+  o String detail
+}

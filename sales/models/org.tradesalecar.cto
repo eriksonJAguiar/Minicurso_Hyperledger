@@ -9,16 +9,16 @@ enum Make {
   o HONDA
 }
 
-participant Buyer identified by buyerId {
-  o String buyerId
+abstract participant User identified by userId {
+  o String userId
   o Double amount
   o String name
 }
 
-participant Seller identified by sellerId {
-  o String sellerId
-  o Double amount
-  o String name
+participant Buyer extends User {
+}
+
+participant Seller extends User {
 }
 
 asset Car identified by carId {
@@ -31,14 +31,13 @@ asset Car identified by carId {
 asset SaleContract identified by saleId {
   o String saleId
   o Double price
-  o Make make
-  o String model
-  o String VIN
-  --> Buyer buyer
+  --> Car car
   --> Seller seller
+  --> Buyer buyer
 }
 
 transaction Sale {
   --> SaleContract saleContract
 }
+
 

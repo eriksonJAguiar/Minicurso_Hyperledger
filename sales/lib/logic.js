@@ -9,14 +9,17 @@
      const terms = contract.saleContract.saleId
      const seller = contract.saleContract.seller
      const buyer = contract.saleContract.buyer
+     
+     
      seller.amount += price;
      buyer.amount -= price;
-
-     //update seller amount
+   	 
+	 //update seller amount
      const sellerRegistry = await getParticipantRegistry('org.tradesalecar.Seller');
      await sellerRegistry.update(seller);
-
+   
      //Update buyer amount
      const buyerRegistry = await getParticipantRegistry('org.tradesalecar.Buyer');
-     await sellerRegistry.update(buyer);
+     await buyerRegistry.update(buyer);
+   
  }
