@@ -1,0 +1,6 @@
+query selectFarmerBusiness {
+  description: "Select all Farmer's Animals"
+  statement:
+     SELECT org.animal.tracking.Business
+        WHERE (farmer == _$cpf)
+}

@@ -1,0 +1,28 @@
+rule FarmerRead{
+  description: "Allow Farmer read"
+  participant(p): "org.animal.tracking.Farmer"
+  operation: READ
+  resource(a): "org.animal.tracking.Animal"
+  condition: (a.animal.getIdentifier() == p.getIdentifier())
+  action: ALLOW 
+}
+
+
+/* Default */
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+

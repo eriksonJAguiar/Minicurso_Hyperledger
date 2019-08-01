@@ -17,7 +17,7 @@ enum MovementStatus{
 
 
 /** tipo de producao que o anima esta associado */
-enum ProdutionType{
+enum ProductionType{
   o MEAT
   o WOOL /** Lã */
   o DAIRY /** Leite */
@@ -36,7 +36,7 @@ abstract participant User identified by cpf {
 participant Farmer extends User{
   o String address1
   o String address2
-  o String country
+  o String county 
   o String postcode
   --> Business business optional /** tipo do negocio */
 }
@@ -55,7 +55,7 @@ asset Animal identified by animalId {
   o String animalId
   o AnimalType species
   o MovementStatus movementStatus
-  o ProdutionType prodType
+  o ProductionType prodType
   --> Field location optional
   --> Farmer owner
 }
@@ -65,7 +65,7 @@ asset Business identified by sbi{
   o String sbi /** Single Business Identifier */
   o String address1
   o String address2
-  o String country
+  o String county
   o String postcode
   --> Farmer owner
   --> Animal[] animals optional
@@ -89,5 +89,9 @@ transaction AnimalMovementArrival extends AnimalMovement{
 }
 
 transaction SetupDemo {
+  o String detail
+}
+
+transaction Select {
   o String detail
 }

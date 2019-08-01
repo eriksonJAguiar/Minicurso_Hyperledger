@@ -1,30 +1,28 @@
-'use strict'
+"use strict"
 
 /**
  * @param {org.animal.tracking.AnimalMovementDeparture} MovementDeparture
  * @transaction
  */
-
-
  async function onAnimalMovementDeparture(movementDeparture){
     
-    const animal = movementDeparture.animal;
     
-    if(animal.movementStatus !== 'IN_FIELD'){
+    if(movementDeparture.animal.movementStatus !== 'IN_FIELD'){
          throw new Error('Animal ja esta em transito');
      }
+   
 
-     animal = 'IN_TRANSIT';
+     movementDeparture.animal.movementStatus = 'IN_TRANSIT';
      const ar = await getAssetRegistry('org.animal.tracking.Animal');
-     await ar.update(animal);
+     await ar.update(movementDeparture.animal);
 
      const to = movementDeparture.to;
 
      if(to.animals){
-         to.animals.push(animal);
+         to.animals.push(movementDeparture.animal);
      }
      else{
-         to.animals = [animal]
+         to.animals = [movementDeparture.animal]
      }
 
      const br = await getAssetRegistry('org.animal.tracking.Business');
@@ -44,7 +42,7 @@ async function onAnimalMovementArrival(movementArrival){
         throw new Error('Animal ja esta alocado');
     }
 
-    amovementArrival.animal = 'IN_FIELD';
+    movementArrival.animal.movementStatus = 'IN_FIELD';
 
     movementArrival.animal.owner = movementArrival.to.owner;
 
@@ -66,12 +64,12 @@ async function onAnimalMovementArrival(movementArrival){
 
 /**
  *
- * @param {com.biz.SetupDemo} setupDemo - SetupDemo instance
+ * @param {org.animal.tracking.SetupDemo} SetupDemo - SetupDemo instance
  * @transaction
  */
-async function setupDemo(setupDemo) {  // eslint-disable-line no-unused-vars
+async function SetupDemo(setupDemo) {  // eslint-disable-line no-unused-vars
     const factory = getFactory();
-    const NS = 'com.biz';
+    const NS = 'org.animal.tracking';
 
     const farmers = [
         factory.newResource(NS, 'Farmer', 'FARMER_1'),
@@ -104,15 +102,17 @@ async function setupDemo(setupDemo) {  // eslint-disable-line no-unused-vars
     const regulator = factory.newResource(NS, 'Regulator', 'REGULATOR');
     regulator.cpf = '123'
     regulator.email = 'REGULATOR';
-    regulator.firstName = 'Ronnie';
-    regulator.lastName = 'Regulator';
+    regulator.firstname = 'Ronnie';
+    regulator.lastname = 'Regulator';
     const regulatorRegistry = await getParticipantRegistry(NS + '.Regulator');
     await regulatorRegistry.addAll([regulator]);
 
-    farmers.forEach(function(farmer) {
+    farmers.forEach(function(farmer, indx) {
         const sbi = 'BUSINESS_' + farmer.getIdentifier().split('_')[1];
-        farmer.firstName = farmer.getIdentifier();
-        farmer.lastName = '';
+        farmer.cpf = '1'+indx;
+      	farmer.firstname = '1'+indx;
+        farmer.lastname = '';
+      	farmer.email = 'email@'+indx;
         farmer.address1 = 'Address1';
         farmer.address2 = 'Address2';
         farmer.county = 'County';
@@ -144,9 +144,9 @@ async function setupDemo(setupDemo) {  // eslint-disable-line no-unused-vars
     animals.forEach(function(animal, index) {
         const field = 'FIELD_' + ((index % 2) + 1);
         const farmer = 'FARMER_' + ((index % 2) + 1);
-        animal.species = 'SHEEP_GOAT';
+        animal.species = 'SHEEP';
         animal.movementStatus = 'IN_FIELD';
-        animal.productionType = 'MEAT';
+        animal.prodType = 'MEAT';
         animal.location = factory.newRelationship(NS, 'Field', field);
         animal.owner = factory.newRelationship(NS, 'Farmer', farmer);
     });
