@@ -1,0 +1,10 @@
+/**
+ * New query file
+ */
+
+query selectCar {
+  description: "Select all Car"
+  statement:
+      SELECT org.tradesalecar.Car 
+  		WHERE(make == "CHEVY")
+}
